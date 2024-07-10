@@ -2,7 +2,6 @@
 #include <Arduino.h>
 #include <DHT.h>
 
-#define LED_PIN 5     // Define the LED pin
 #define DHT_PIN 18      // Define the DHT sensor pin
 #define DHT_TYPE DHT11 // Define the DHT sensor type (DHT11 or DHT22)
 
@@ -18,7 +17,6 @@ BLEFloatCharacteristic temperatureCharacteristic(TEMPERATURE_CHARACTERISTIC_UUID
 
 void setup() {
   Serial.begin(9600);  // Start serial communication
-  //pinMode(LED_PIN, OUTPUT); // Set LED pin as output
 
   //Initialize temp sensor and do initial read
   dht.begin(); 
@@ -27,7 +25,6 @@ void setup() {
   //Initialize BLE
   if(!BLE.begin()){
     Serial.println("Starting BLE failed!");
-    //while(1);
     }
 
   //Set up the BLE device
@@ -48,9 +45,6 @@ void setup() {
 }
 
 void loop() {
-  // Turn LED on
-  //digitalWrite(LED_PIN, HIGH);
-  //Serial.println("LED turned ON");
   BLEDevice central = BLE.central();
 
   //Check if the connection was established correctly.
