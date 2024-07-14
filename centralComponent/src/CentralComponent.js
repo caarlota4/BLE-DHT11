@@ -3,7 +3,10 @@
  * Date: 15/03/2024
  */
 const noble = require('@abandonware/noble');
+const fs = require('fs');
+const path = require('path');
 
+const filePath = path.join(__dirname, 'protectedTemperature.txt');
 const DEVICE_NAME = 'ESP32-board';
 const TEMPERATURE_SERVICE_UUID = '19b10001e8f2537e4f6cd104768a1214';
 const TEMPERATURE_CHARACTERISTIC_UUID = '19b10001e8f2537e4f6cd104768a1214';
@@ -79,6 +82,24 @@ noble.on('discover', (peripheral) => {
                   const temperature = bufferToFloat(data);
                   console.log(`Temperature read: ${temperature.toFixed(2)}°C`);
                 });
+                // Convert the float number to a string
+                const data = temperature.toString();
+                // Write data to the file
+                fs.writeFile(filePath, data, { mode: 0o600 }, (err) => {
+                    if (err) {
+                    return console.error('Error writing to file:', err);
+                    }
+                    console.log('Data written to file successfully.');
+                
+                    // Change the permissions of the file to be protected
+                    fs.chmod(filePath, 0o400, (err) => {
+                    if (err) {
+                        return console.error('Error setting file permissions:', err);
+                    }
+                    console.log('File permissions set to read-only for the owner.');
+                    });
+                });
+
                 // Subscribe to the characteristic
                 
                 temperatureCharacteristic.subscribe((error) => {
